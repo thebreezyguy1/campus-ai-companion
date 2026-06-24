@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "743041057666",
+    "project_id": "campus-ai-companion",
+    "storage_bucket": "campus-ai-companion.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:743041057666:android:eb53d6e69fa292ce3fc59b",
+        "android_client_info": {
+          "package_name": "com.company.campusai"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "743041057666-1rnpq1bnnsd5nuccmp9repdb7v6fdq8q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASSI59UGm0aInjOI5HhDRg5trWFr6DQFc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "743041057666-1rnpq1bnnsd5nuccmp9repdb7v6fdq8q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "743041057666-io8q8p0p269rj74u4s18v9avu86o8d9d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.company.campusai"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
