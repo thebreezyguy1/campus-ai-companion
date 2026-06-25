@@ -9,10 +9,9 @@ import {
   StyleSheet,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
-import { LocationAutocomplete } from "@julekgwa/react-native-places-autocomplete";
-import { LocationSuggestion } from "@julekgwa/react-native-places-autocomplete";
 import AddressPicker from "../components/AddressPicker";
 import DatePickerField from "../components/DatePickerField";
+import RegistrationStepsHeader from "../components/RegistrationStepsHeader";
 
 export default function RegisterScreen({ navigation }) {
   const [firstName, setFirstName] = useState("");
@@ -34,14 +33,14 @@ export default function RegisterScreen({ navigation }) {
   const today = new Date();
 
   const handleNext = () => {
-    if (!firstName || !lastName || !email || !password || !gender) {
-      alert("Please fill in all required fields.");
-      return;
-    }
-    if (password !== confirmPassword) {
-      alert("Passwords are not matching. Please try again!");
-      return;
-    }
+    // if (!firstName || !lastName || !email || !password || !gender) {
+    //   alert("Please fill in all required fields.");
+    //   return;
+    // }
+    // if (password !== confirmPassword) {
+    //   alert("Passwords are not matching. Please try again!");
+    //   return;
+    // }
     navigation.navigate("SchoolInfo", {
       personalInfo: {
         firstName,
@@ -75,21 +74,7 @@ export default function RegisterScreen({ navigation }) {
 
       <Text style={styles.title}>Personal Info</Text>
 
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginBottom: 24,
-          gap: 10,
-        }}
-      >
-        <View style={styles.circleContainer}>
-          <View style={[styles.circle, styles.activeCircle]}></View>
-          <View style={styles.circle}></View>
-          <View style={styles.circle}></View>
-        </View>
-        <Text style={styles.subtitle}>Step 1 of 3</Text>
-      </View>
+      <RegistrationStepsHeader activeIndex={1} />
 
       <View>
         <Text style={styles.label}>First name</Text>

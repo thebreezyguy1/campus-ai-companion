@@ -35,10 +35,15 @@ export default function DatePickerField({
     setShow(false);
   };
 
+  const openPicker = () => {
+    setTempDate(value || new Date());
+    setShow(true);
+  };
+
   return (
     <View>
       {label && <Text style={styles.label}>{label}</Text>}
-      <TouchableOpacity style={styles.input} onPress={() => setShow(true)}>
+      <TouchableOpacity style={styles.input} onPress={openPicker}>
         <Text style={value ? styles.valueText : styles.placeholderText}>
           {value ? value.toLocaleDateString() : placeholder}
         </Text>
@@ -102,6 +107,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 13,
     backgroundColor: "#F6F3ED",
+    marginBottom: 15,
   },
   valueText: {
     fontSize: 15,
