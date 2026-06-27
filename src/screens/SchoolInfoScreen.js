@@ -35,10 +35,10 @@ export default function SchoolInfoScreen({ navigation, route }) {
   ]);
 
   const handleNext = () => {
-    // if (!level || !major || !gpa || !startDate || !endDate) {
-    //   alert("Please fill in all required fields.");
-    //   return;
-    // }
+    if (!level || !major || !gpa || !startDate || !endDate) {
+      alert("Please fill in all required fields.");
+      return;
+    }
     navigation.navigate("ProgramInfo", {
       personalInfo,
       schoolInfo: {
@@ -70,7 +70,7 @@ export default function SchoolInfoScreen({ navigation, route }) {
     <ScrollView contentContainerStyle={styles.container}>
       <TouchableOpacity
         style={styles.backRow}
-        onPress={() => navigation.navigate("Register")}
+        onPress={() => navigation.goBack()}
       >
         <Text style={styles.backArrow}>←</Text>
         <Text style={styles.backText}>Back to Personal Info</Text>

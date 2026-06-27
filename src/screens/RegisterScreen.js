@@ -33,14 +33,14 @@ export default function RegisterScreen({ navigation }) {
   const today = new Date();
 
   const handleNext = () => {
-    // if (!firstName || !lastName || !email || !password || !gender) {
-    //   alert("Please fill in all required fields.");
-    //   return;
-    // }
-    // if (password !== confirmPassword) {
-    //   alert("Passwords are not matching. Please try again!");
-    //   return;
-    // }
+    if (!firstName || !lastName || !email || !password || !gender) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      alert("Passwords are not matching. Please try again!");
+      return;
+    }
     navigation.navigate("SchoolInfo", {
       personalInfo: {
         firstName,
@@ -66,7 +66,7 @@ export default function RegisterScreen({ navigation }) {
     >
       <TouchableOpacity
         style={styles.backRow}
-        onPress={() => navigation.navigate("Login")}
+        onPress={() => navigation.goBack()}
       >
         <Text style={styles.backArrow}>←</Text>
         <Text style={styles.backText}>Back to login</Text>
