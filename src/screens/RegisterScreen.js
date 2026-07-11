@@ -96,11 +96,10 @@ export default function RegisterScreen({ navigation }) {
       </View>
 
       <DatePickerField
-        label={"Date of Birth"}
+        label="Date of Birth"
         value={dob}
         onChange={setDob}
-        maximumDate={new Date()}
-        placeholder="MM/DD/YYYY"
+        showDay={true}
       />
 
       <Text style={styles.label}>Gender</Text>

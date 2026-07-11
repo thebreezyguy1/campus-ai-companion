@@ -14,8 +14,8 @@ import DatePickerField from "../components/DatePickerField";
 export default function SchoolInfoScreen({ navigation, route }) {
   const { personalInfo } = route.params;
 
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [gpa, setGpa] = useState("");
 
   const [levelOpen, setLevelOpen] = useState(false);
@@ -99,6 +99,7 @@ export default function SchoolInfoScreen({ navigation, route }) {
         style={styles.dropdown}
         dropDownContainerStyle={styles.dropdownContainer}
         zIndex={4000}
+        listMode="SCROLLVIEW"
       />
 
       <Text style={styles.label}>Major</Text>
@@ -112,21 +113,20 @@ export default function SchoolInfoScreen({ navigation, route }) {
         style={styles.dropdown}
         dropDownContainerStyle={styles.dropdownContainer}
         zIndex={3000}
+        listMode="SCROLLVIEW"
       />
 
       <DatePickerField
-        label={"Start Date"}
+        label="Start Date"
         value={startDate}
         onChange={setStartDate}
-        placeholder="MM/YYYY"
       />
 
       <DatePickerField
         label={"End Date"}
         value={endDate}
         onChange={setEndDate}
-        minimumDate={startDate}
-        placeholder="MM/YYYY"
+        minDate={startDate}
       />
 
       <Text style={styles.label}>Current GPA</Text>
