@@ -25,6 +25,24 @@ export const registerWithEmail = async (name, email, password, profileData) => {
   return user;
 };
 
+/**
+ * Writes the full profile document for an already-created Firebase Auth user.
+ * Does NOT create the auth account — that already happened in RegisterScreen
+ * via createUserWithEmailAndPassword. This just attaches profile data to it.
+ */
+export async function saveUserProfile(uid, profileData) {
+  if (!uid) {
+    throw new Error(
+      "Missing uid — cannot save profile without an authenticated user.",
+    );
+  }
+  await setDoc(doc(db, "users", uid), {
+    ...profileData,
+    createdAt: new Date().toISOString(),
+  });
+  return uid;
+}
+
 export const loginWithEmail = (email, password) =>
   signInWithEmailAndPassword(auth, email, password);
 

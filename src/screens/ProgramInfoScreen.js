@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { registerWithEmail } from "../services/authService";
+import { registerWithEmail, saveUserProfile } from "../services/authService";
 import {
   ScrollView,
   StyleSheet,
@@ -111,10 +111,10 @@ export default function ProgramInfoScreen({ navigation, route }) {
   const handleRegister = async () => {
     setLoading(true);
     try {
-      const user = await registerWithEmail(
+      await registerWithEmail(
         `${personalInfo.firstName} ${personalInfo.lastName}`,
-        personalInfo.email,
-        personalInfo.password,
+        `${personalInfo.email}`,
+        `${personalInfo.password}`,
         { ...personalInfo, ...schoolInfo, completedCourses },
       );
     } catch (e) {

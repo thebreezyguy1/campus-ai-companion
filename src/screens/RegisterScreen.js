@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import {
   View,
   Text,
@@ -7,11 +6,17 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Modal,
+  ActivityIndicator,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import AddressPicker from "../components/AddressPicker";
 import DatePickerField from "../components/DatePickerField";
 import RegistrationStepsHeader from "../components/RegistrationStepsHeader";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../services/firebase";
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function RegisterScreen({ navigation }) {
   const [firstName, setFirstName] = useState("");
@@ -30,28 +35,72 @@ export default function RegisterScreen({ navigation }) {
     { label: "Female", value: "female" },
   ]);
 
+  const [checkingEmail, setCheckingEmail] = useState(false);
+  const [emailInUseModalVisible, setEmailInUseModalVisible] = useState(false);
+
   const today = new Date();
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!firstName || !lastName || !email || !password || !gender) {
       alert("Please fill in all required fields.");
+      return;
+    }
+    if (!EMAIL_REGEX.test(email.trim())) {
+      alert("Please enter a valid email address.");
       return;
     }
     if (password !== confirmPassword) {
       alert("Passwords are not matching. Please try again!");
       return;
     }
-    navigation.navigate("SchoolInfo", {
-      personalInfo: {
-        firstName,
-        lastName,
-        dob: dob.toISOString(),
-        gender,
-        email,
-        password,
-        streetAddress,
-      },
-    });
+
+    setCheckingEmail(true);
+
+    try {
+      const emailExists = await checkEmailExists(email);
+      if (emailExists) {
+        setEmailInUseModalVisible(true);
+        setCheckingEmail(false);
+        return;
+      }
+
+      navigation.navigate("SchoolInfo", {
+        personalInfo: {
+          firstName,
+          lastName,
+          dob: dob.toISOString(),
+          gender,
+          email: email.trim(),
+          streetAddress,
+        },
+      });
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setCheckingEmail(false);
+    }
+  };
+
+  const checkEmailExists = async (email) => {
+    const normalizedEmail = email.toLowerCase().trim();
+    const q = query(
+      collection(db, "users"),
+      where("email", "==", normalizedEmail),
+    );
+    const querySnapshot = await getDocs(q);
+
+    return !querySnapshot.empty;
+  };
+
+  const handleGoToLogin = () => {
+    setEmailInUseModalVisible(false);
+    navigation.navigate("Login", { email: email.trim() });
+  };
+
+  const handleUseDifferentEmail = () => {
+    setEmailInUseModalVisible(false);
+    setEmail("");
   };
 
   useEffect(() => {
@@ -152,9 +201,50 @@ export default function RegisterScreen({ navigation }) {
         />
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleNext}>
-        <Text style={styles.buttonText}>Next →</Text>
+      <TouchableOpacity
+        style={[styles.button, checkingEmail && styles.buttonDisabled]}
+        onPress={handleNext}
+        disabled={checkingEmail}
+      >
+        {checkingEmail ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Next →</Text>
+        )}
       </TouchableOpacity>
+
+      <Modal
+        visible={emailInUseModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setEmailInUseModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitle}>You already have an account</Text>
+            <Text style={styles.modalBody}>
+              An account with {email.trim()} already exists. Log in instead, or
+              use a different email to create a new account.
+            </Text>
+
+            <TouchableOpacity
+              style={styles.modalPrimaryButton}
+              onPress={handleGoToLogin}
+            >
+              <Text style={styles.modalPrimaryButtonText}>Log In</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.modalSecondaryButton}
+              onPress={handleUseDifferentEmail}
+            >
+              <Text style={styles.modalSecondaryButtonText}>
+                Use a different email
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -202,6 +292,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 8,
   },
+  buttonDisabled: {
+    opacity: 0.7,
+  },
   buttonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
   label: {
     fontSize: 13,
@@ -223,5 +316,54 @@ const styles = StyleSheet.create({
   activeCircle: {
     backgroundColor: "#4F46E4",
     width: 30,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.45)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
+  },
+  modalCard: {
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 24,
+    width: "100%",
+    maxWidth: 380,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#111827",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  modalBody: {
+    fontSize: 14,
+    color: "#4B5563",
+    textAlign: "center",
+    lineHeight: 20,
+    marginBottom: 20,
+  },
+  modalPrimaryButton: {
+    backgroundColor: "#4F46E5",
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  modalPrimaryButtonText: {
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 15,
+  },
+  modalSecondaryButton: {
+    paddingVertical: 12,
+    alignItems: "center",
+  },
+  modalSecondaryButtonText: {
+    color: "#4F46E5",
+    fontWeight: "600",
+    fontSize: 14,
   },
 });
