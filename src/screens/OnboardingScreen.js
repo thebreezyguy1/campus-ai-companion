@@ -152,12 +152,12 @@ export default function OnboardingScreen({ navigation }) {
   };
 
   const handleFinish = async () => {
-    await AsyncStorage.setItem("onboarding_complete", "true");
+    await AsyncStorage.setItem("has_seen_onboarding", "true");
     navigation.replace("Login");
   };
 
   const handleSkip = async () => {
-    await AsyncStorage.setItem("onboarding_complete", "true");
+    await AsyncStorage.setItem("has_seen_onboarding", "true");
     navigation.replace("Login");
   };
 
