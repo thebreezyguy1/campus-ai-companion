@@ -6,7 +6,9 @@ import {
   StyleSheet,
   Switch,
   TouchableOpacity,
+  Alert,
 } from "react-native";
+import { logout } from "../services/authService";
 
 export default function SettingsScreen({ navigation }) {
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(true);
@@ -18,6 +20,20 @@ export default function SettingsScreen({ navigation }) {
     setIsNotificationsEnabled((previousState) => !previousState);
   const toggleReminderSwitch = () =>
     setIsRemindersEnabled((previousState) => !previousState);
+
+  const handleLogout = async () => {
+    Alert.alert("Sign out", "Are you sure you want to sign out?", [
+      {
+        text: "No",
+        onPress: () => console.log("Cancel pressed"),
+        style: "destructive",
+      },
+      {
+        text: "Yes",
+        onPress: () => logout(),
+      },
+    ]);
+  };
 
   return (
     <View style={styles.settingsContainer}>
@@ -91,7 +107,10 @@ export default function SettingsScreen({ navigation }) {
             <View style={styles.preferenceTitleContainer}>
               <Text style={styles.preferencesTitle}>Account</Text>
             </View>
-            <TouchableOpacity style={styles.optionContainer}>
+            <TouchableOpacity
+              onPress={handleLogout}
+              style={styles.optionContainer}
+            >
               <Text style={styles.signoutText}>Sign out</Text>
             </TouchableOpacity>
           </View>
