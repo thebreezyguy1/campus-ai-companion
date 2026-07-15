@@ -8,7 +8,7 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "./firebase";
 import { useEffect } from "react";
 
@@ -19,7 +19,6 @@ export const registerWithEmail = async (name, email, password, profileData) => {
   await updateProfile(user, { displayName: name });
   await setDoc(doc(db, "users", user.uid), {
     ...profileData,
-    name,
     createdAt: Date.now(),
   });
   return user;
@@ -63,6 +62,24 @@ export const useGoogleSignIn = () => {
 };
 
 export const logout = () => signOut(auth);
+
+export const getUserData = async () => {
+  const userDocRef = doc(db, "users", auth.currentUser.uid);
+  try {
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (userDocSnap.exists()) {
+      const userData = userDocSnap.data();
+      console.log("User Profile Data", userData);
+      return userData;
+    } else {
+      console.log("No such user found!");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+  }
+};
 
 export const updateUserProfile = (uid, data) =>
   updateDoc(doc(db, "users", uid), data);

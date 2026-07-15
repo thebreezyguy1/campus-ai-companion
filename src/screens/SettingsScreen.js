@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,11 +8,14 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import { logout } from "../services/authService";
+import { getUserData, logout } from "../services/authService";
+import SplashScreen from "./SplashScreen";
 
 export default function SettingsScreen({ navigation }) {
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(true);
   const [isRemindersEnabled, setIsRemindersEnabled] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const profileImage = null;
 
@@ -20,6 +23,10 @@ export default function SettingsScreen({ navigation }) {
     setIsNotificationsEnabled((previousState) => !previousState);
   const toggleReminderSwitch = () =>
     setIsRemindersEnabled((previousState) => !previousState);
+
+  const capitalizeWord = (word) => {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  };
 
   const handleLogout = async () => {
     Alert.alert("Sign out", "Are you sure you want to sign out?", [
@@ -34,6 +41,24 @@ export default function SettingsScreen({ navigation }) {
       },
     ]);
   };
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const data = await getUserData();
+        setUserData(data);
+      } catch (error) {
+        console.error("Unable to fetch user information:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchUserData();
+  }, []);
+
+  if (isLoading) {
+    return <SplashScreen />;
+  }
 
   return (
     <View style={styles.settingsContainer}>
@@ -62,8 +87,13 @@ export default function SettingsScreen({ navigation }) {
             )}
           </View>
           <View style={styles.profileInfoContainer}>
-            <Text style={styles.userName}>Dorian Taponzing</Text>
-            <Text style={styles.userLevel}>CS • Junior • GPA 3.5</Text>
+            <Text style={styles.userName}>
+              {userData.firstName + " " + userData.lastName}
+            </Text>
+            <Text style={styles.userLevel}>
+              {userData.major.toUpperCase()} • {capitalizeWord(userData.level)}{" "}
+              • GPA {userData.gpa.toFixed(1)}
+            </Text>
             <Text style={styles.userCollege}>KSU</Text>
           </View>
         </View>
@@ -90,11 +120,17 @@ export default function SettingsScreen({ navigation }) {
             </View>
             <View style={styles.optionContainer}>
               <Text style={styles.optionText}>Major</Text>
-              <Text style={styles.optionStatus}>Computer Science</Text>
+              <Text style={styles.optionStatus}>
+                {userData.major === "cs"
+                  ? "Computer Science"
+                  : "Information Technology"}
+              </Text>
             </View>
             <View style={styles.optionContainer}>
               <Text style={styles.optionText}>College level</Text>
-              <Text style={styles.optionStatus}>Junior</Text>
+              <Text style={styles.optionStatus}>
+                {capitalizeWord(userData.level)}
+              </Text>
             </View>
             <View style={styles.optionContainer}>
               <Text style={styles.optionText}>Completed courses</Text>
