@@ -6,6 +6,7 @@ import { ActivityIndicator, View } from "react-native";
 import { useEffect, useState } from "react";
 import { hasSeenOnboarding } from "../services/storageService";
 import SplashScreen from "../screens/SplashScreen";
+import { UserProvider } from "../context/UserContext";
 
 export default function RootNavigator() {
   const [onboardingDone, setOnboardingDone] = useState(false);
@@ -23,12 +24,14 @@ export default function RootNavigator() {
   if (checkingStorage || loading) return <SplashScreen />;
 
   return (
-    <NavigationContainer>
-      {user ? (
-        <AppTabs />
-      ) : (
-        <AuthStack initialRoute={onboardingDone ? "Login" : "Onboarding"} />
-      )}
-    </NavigationContainer>
+    <UserProvider firebaseUser={user}>
+      <NavigationContainer>
+        {user ? (
+          <AppTabs />
+        ) : (
+          <AuthStack initialRoute={onboardingDone ? "Login" : "Onboarding"} />
+        )}
+      </NavigationContainer>
+    </UserProvider>
   );
 }
