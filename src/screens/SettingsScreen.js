@@ -42,6 +42,10 @@ export default function SettingsScreen({ navigation }) {
     ]);
   };
 
+  const openEditCoursesScreen = () => {
+    navigation.navigate("EditCourses");
+  };
+
   if (profileLoading || !profile) {
     return <SplashScreen />;
   }
@@ -120,7 +124,7 @@ export default function SettingsScreen({ navigation }) {
             </View>
             <View style={styles.optionContainer}>
               <Text style={styles.optionText}>Completed courses</Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={openEditCoursesScreen}>
                 <Text style={styles.editButtonText}>Edit</Text>
               </TouchableOpacity>
             </View>

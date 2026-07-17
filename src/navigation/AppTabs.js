@@ -3,8 +3,20 @@ import ChatScreen from "../screens/ChatScreen";
 import HistoryScreen from "../screens/HistoryScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import { Ionicons } from "@expo/vector-icons";
+import { createStackNavigator } from "@react-navigation/stack";
+import EditCoursesScreen from "../screens/EditCoursesScreen";
 
 const Tab = createBottomTabNavigator();
+const SettingsStack = createStackNavigator();
+
+const SettingsStackNavigator = () => {
+  return (
+    <SettingsStack.Navigator screenOptions={{ headerShown: false }}>
+      <SettingsStack.Screen name="SettingsHome" component={SettingsScreen} />
+      <SettingsStack.Screen name="EditCourses" component={EditCoursesScreen} />
+    </SettingsStack.Navigator>
+  );
+};
 
 export default function AppTabs() {
   return (
@@ -27,7 +39,7 @@ export default function AppTabs() {
     >
       <Tab.Screen name="Chat" component={ChatScreen} />
       <Tab.Screen name="History" component={HistoryScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
+      <Tab.Screen name="Settings" component={SettingsStackNavigator} />
     </Tab.Navigator>
   );
 }
