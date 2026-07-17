@@ -6,20 +6,28 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import DropDownPicker from "react-native-dropdown-picker";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { COURSES_BY_MAJOR } from "../constants/courses";
 import { useUser } from "../context/UserContext";
+import DropDownPicker from "../components/DropDownPicker";
 
 export default function EditCoursesScreen({ navigation }) {
   const { profile } = useUser();
+  const catalog = COURSES_BY_MAJOR[profile.major];
 
-  const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
-  const [items, setItems] = useState(COURSES_BY_MAJOR[profile.major]);
   const [completedCourses, setCompletedCourses] = useState(
     profile.completedCourses,
   );
+
+  const availableItems = useMemo(
+    () => catalog.filter((c) => !completedCourses.includes(c.value)),
+    [completedCourses, catalog],
+  );
+
+  const removeCourse = async (course) => {
+    setCompletedCourses((prev) => prev.filter((c) => c !== course));
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.mainContainer}>
@@ -42,19 +50,18 @@ export default function EditCoursesScreen({ navigation }) {
         </Text>
         <View>
           <DropDownPicker
-            open={open}
+            items={availableItems}
             value={value}
-            items={items}
-            setOpen={setOpen}
-            setValue={setValue}
-            setItems={setItems}
+            onSelect={(selected) => {
+              setValue(selected);
+              if (!completedCourses.includes(selected)) {
+                setCompletedCourses((prev) => [...prev, selected]);
+              }
+            }}
             placeholder="e.g. CSCI 1301"
-            listMode="SCROLLVIEW"
-            searchable
-            style={{ borderColor: "#EDEDED", marginBottom: 20 }}
           />
         </View>
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, marginTop: 20 }}>
           <Text style={styles.smallTitle}>Completed courses</Text>
           <View style={styles.courseContainer}>
             {completedCourses?.length === 0 ? (
@@ -84,7 +91,9 @@ export default function EditCoursesScreen({ navigation }) {
                           {course}
                         </Text>
                       </View>
-                      <Ionicons name="trash" size={24} color="#E14C4A" />
+                      <TouchableOpacity onPress={() => removeCourse(course)}>
+                        <Ionicons name="trash" size={24} color="#E14C4A" />
+                      </TouchableOpacity>
                     </View>
                   );
                 })}
