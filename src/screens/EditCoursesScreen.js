@@ -10,6 +10,7 @@ import { useEffect, useMemo, useState } from "react";
 import { COURSES_BY_MAJOR } from "../constants/courses";
 import { useUser } from "../context/UserContext";
 import DropDownPicker from "../components/DropDownPicker";
+import { updateCompletedCourses } from "../services/userService";
 
 export default function EditCoursesScreen({ navigation }) {
   const { profile } = useUser();
@@ -19,6 +20,7 @@ export default function EditCoursesScreen({ navigation }) {
   const [completedCourses, setCompletedCourses] = useState(
     profile.completedCourses,
   );
+  const [saving, setSaving] = useState(false);
 
   const availableItems = useMemo(
     () => catalog.filter((c) => !completedCourses.includes(c.value)),
@@ -29,8 +31,23 @@ export default function EditCoursesScreen({ navigation }) {
     setCompletedCourses((prev) => prev.filter((c) => c !== course));
   };
 
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      updateCompletedCourses(completedCourses);
+      navigation.goBack();
+    } catch (error) {
+      console.error("Failed to save completed courses:", error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
-    <ScrollView contentContainerStyle={styles.mainContainer}>
+    <ScrollView
+      style={styles.scrollView}
+      contentContainerStyle={styles.mainContainer}
+    >
       <View style={styles.header}>
         <View style={styles.navigationHeader}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -38,8 +55,8 @@ export default function EditCoursesScreen({ navigation }) {
               <Ionicons name="chevron-back" size={24} color="black" />
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={styles.saveText}>Save</Text>
+          <TouchableOpacity onPress={handleSave}>
+            <Text style={styles.saveText}>{saving ? "Saving..." : "Save"}</Text>
           </TouchableOpacity>
         </View>
         <Text style={styles.title}>Completed courses</Text>
@@ -107,9 +124,11 @@ export default function EditCoursesScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  mainContainer: {
+  scrollView: {
     backgroundColor: "#fff",
     flex: 1,
+  },
+  mainContainer: {
     paddingTop: 80,
   },
   header: {
