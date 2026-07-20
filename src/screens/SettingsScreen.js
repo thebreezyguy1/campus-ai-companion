@@ -10,6 +10,8 @@ import {
 import { logout } from "../services/authService";
 import SplashScreen from "./SplashScreen";
 import { useUser } from "../context/UserContext";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import Entypo from "@expo/vector-icons/Entypo";
 
 export default function SettingsScreen({ navigation }) {
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(true);
@@ -44,6 +46,10 @@ export default function SettingsScreen({ navigation }) {
 
   const openEditCoursesScreen = () => {
     navigation.navigate("EditCourses");
+  };
+
+  const openEditProfileScreen = () => {
+    navigation.navigate("EditProfile");
   };
 
   if (profileLoading || !profile) {
@@ -87,6 +93,18 @@ export default function SettingsScreen({ navigation }) {
             <Text style={styles.userCollege}>KSU</Text>
           </View>
         </View>
+        <TouchableOpacity
+          onPress={openEditProfileScreen}
+          style={styles.editProfileBtn}
+        >
+          <View style={styles.editProfileText}>
+            <FontAwesome5 name="user-edit" size={16} color="#4F46E4" />
+            <Text style={{ color: "#4F46E4", fontWeight: 500, fontSize: 16 }}>
+              Edit profile
+            </Text>
+          </View>
+          <Entypo name="chevron-right" size={20} color="#8A8781" />
+        </TouchableOpacity>
         <View style={styles.preferenceContainer}>
           <View style={styles.preferenceTitleContainer}>
             <Text style={styles.preferencesTitle}>Preferences</Text>
@@ -219,5 +237,16 @@ const styles = StyleSheet.create({
   signoutText: {
     color: "#E14C4A",
     fontSize: 18,
+  },
+  editProfileBtn: {
+    marginVertical: 10,
+    justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  editProfileText: {
+    flexDirection: "row",
+    gap: 10,
+    alignItems: "center",
   },
 });

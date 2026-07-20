@@ -5,6 +5,7 @@ import SettingsScreen from "../screens/SettingsScreen";
 import { Ionicons } from "@expo/vector-icons";
 import { createStackNavigator } from "@react-navigation/stack";
 import EditCoursesScreen from "../screens/EditCoursesScreen";
+import EditProfileScreen from "../screens/editProfileScreen";
 
 const Tab = createBottomTabNavigator();
 const SettingsStack = createStackNavigator();
@@ -14,6 +15,7 @@ const SettingsStackNavigator = () => {
     <SettingsStack.Navigator screenOptions={{ headerShown: false }}>
       <SettingsStack.Screen name="SettingsHome" component={SettingsScreen} />
       <SettingsStack.Screen name="EditCourses" component={EditCoursesScreen} />
+      <SettingsStack.Screen name="EditProfile" component={EditProfileScreen} />
     </SettingsStack.Navigator>
   );
 };
