@@ -103,7 +103,7 @@ export default function SettingsScreen({ navigation }) {
               Edit profile
             </Text>
           </View>
-          <Entypo name="chevron-right" size={20} color="#8A8781" />
+          <Entypo name="chevron-right" size={20} color="#4F46E4" />
         </TouchableOpacity>
         <View style={styles.preferenceContainer}>
           <View style={styles.preferenceTitleContainer}>
