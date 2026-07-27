@@ -31,6 +31,8 @@ export default function DatePickerField({
   minDate = null, // e.g. pass startDate when this field is an "End Date"
   maxDate = null,
   minDateErrorLabel = "start date", // used to phrase the inline error message
+  inputStyle,
+  valueTextStyle,
 }) {
   const [show, setShow] = useState(false);
   const [error, setError] = useState(null);
@@ -182,8 +184,19 @@ export default function DatePickerField({
   return (
     <View>
       {label && <Text style={styles.label}>{label}</Text>}
-      <TouchableOpacity style={styles.input} onPress={openPicker}>
-        <Text style={value ? styles.valueText : styles.placeholderText}>
+      <TouchableOpacity
+        style={inputStyle ? inputStyle : styles.input}
+        onPress={openPicker}
+      >
+        <Text
+          style={
+            value
+              ? valueTextStyle
+                ? valueTextStyle
+                : styles.valueText
+              : styles.placeholderText
+          }
+        >
           {formatValue()}
         </Text>
       </TouchableOpacity>

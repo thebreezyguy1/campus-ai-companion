@@ -6,6 +6,7 @@ import {
   Switch,
   TouchableOpacity,
   Alert,
+  Image,
 } from "react-native";
 import { logout } from "../services/authService";
 import SplashScreen from "./SplashScreen";
@@ -19,7 +20,7 @@ export default function SettingsScreen({ navigation }) {
 
   const { profile, loading: profileLoading } = useUser();
 
-  const profileImage = null;
+  const profileImage = profile.photoURL ?? null;
 
   const toggleNotificationSwitch = () =>
     setIsNotificationsEnabled((previousState) => !previousState);
@@ -65,7 +66,7 @@ export default function SettingsScreen({ navigation }) {
         <View style={styles.profileContainer}>
           <View>
             {profileImage ? (
-              <Image></Image>
+              <Image source={{ uri: profile.photoURL }} style={styles.image} />
             ) : (
               <View
                 style={{
@@ -248,5 +249,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
     alignItems: "center",
+  },
+  image: {
+    height: 75,
+    width: 75,
+    borderRadius: "50%",
   },
 });
